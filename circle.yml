@@ -1,0 +1,47 @@
+machine:
+  services:
+    - docker
+  environment:
+    IMAGE_TAG: $QUAY_URL/meng_lin_lu/prophet
+
+dependencies:
+  override:
+    - echo "Hello World for dependencies"
+
+compile:
+  pre:
+    - echo "Hello World for compile on pre"
+  override:
+    - echo "Hello World for compile"
+    - docker build -t prophet .
+  post:
+    - echo "Hello World for compile on post"
+
+test:
+  pre:
+    - echo "Hello World for test on pre"
+  override:
+    - echo "Hello World for test on override"
+  post:
+    - echo "Hello World for test on post"
+
+deployment:
+  production:
+    branch: production
+    commands:
+      - echo "Hello World for deployment on production"
+  staging:
+    branch: master
+      - echo "Hello World for deployment on staging"
+  release:
+    tag: /release-(candidate-|)v[0-9]{4}\.[0-9]{2}\.[0-9]{2}(\.[a-z0-9]+|)/
+    commands:
+      - docker login -u="$QUAY_USERNAME" -p="$QUAY_PASSWORD" quay.robot.car
+      - docker tag prophet $IMAGE_TAG:$(echo $CIRCLE_SHA1 | head -c 7)
+      - docker push $IMAGE_TAG:$(echo $CIRCLE_SHA1 | head -c 7)
+  dev:
+    branch: /.*?/
+    commands:
+      - echo "Hello World for deployment on dev"
+      # - source scripts/aws-cli-assumerole.sh $(echo $CIRCLE_SHA1 | head -c 7) $CIRCLE_BUILD_NUM
+      # - source scripts/aws-cli-assume-circleci-role.sh $(echo $CIRCLE_SHA1 | head -c 7) $CIRCLE_BUILD_NUM
