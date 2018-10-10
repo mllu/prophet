@@ -7,7 +7,7 @@ import (
 
 	"github.com/mllu/prophet/pkg/diagflow"
 
-	"github.com/nlopes/slack"
+	"github.com/mllu/slack"
 )
 
 const (
