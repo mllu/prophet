@@ -49,7 +49,7 @@ func (h *interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var message slack.AttachmentActionCallback
+	var message slack.InteractionCallback
 	if err := json.Unmarshal([]byte(jsonStr), &message); err != nil {
 		log.Printf("[ERROR] Failed to decode json message from slack: %s", jsonStr)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -65,41 +65,50 @@ func (h *interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ts := message.OriginalMessage.Timestamp
+	channel := message.Channel.ID
+
 	action := message.Actions[0]
 	switch action.Name {
 	case mySlack.ActionSelect:
 		value := action.SelectedOptions[0].Value
 
-		// Overwrite original drop down message.
-		originalMessage := message.OriginalMessage
-		originalMessage.Attachments[0].Text = fmt.Sprintf("OK to order %s ?", strings.Title(value))
-		originalMessage.Attachments[0].Actions = []slack.AttachmentAction{
-			{
-				Name:  mySlack.ActionStart,
-				Text:  "Yes",
-				Type:  "button",
-				Value: "start",
-				Style: "primary",
-			},
-			{
-				Name:  mySlack.ActionCancel,
-				Text:  "No",
-				Type:  "button",
-				Style: "danger",
+		// Update original drop down message.
+		attachment := slack.Attachment{
+			Text:       fmt.Sprintf("OK to order %s ?", strings.Title(value)),
+			Color:      "#f9a41b",
+			CallbackID: "beer",
+			Actions: []slack.AttachmentAction{
+				{
+					Name:  mySlack.ActionStart,
+					Text:  "Yes",
+					Type:  "button",
+					Value: "start",
+					Style: "primary",
+				},
+				{
+					Name:  mySlack.ActionCancel,
+					Text:  "No",
+					Type:  "button",
+					Style: "danger",
+				},
 			},
 		}
-
-		w.Header().Add("Content-type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(&originalMessage)
+		params := slack.MsgOptionAttachments(attachment)
+		log.Println("channel:", channel, "ts:", ts, "params:", params)
+		_, _, _, err := h.slackClient.UpdateMessage(channel, ts, params)
+		if err != nil {
+			log.Printf("failed to post message: %s", err)
+			return
+		}
 		return
 	case mySlack.ActionStart:
 		title := ":ok: your order was submitted! yay!"
-		h.responseMessage(w, message, title, "")
+		h.responseMessage(w, channel, ts, title, "")
 		return
 	case mySlack.ActionCancel:
 		title := fmt.Sprintf(":x: @%s canceled the request", message.User.Name)
-		h.responseMessage(w, message, title, "")
+		h.responseMessage(w, channel, ts, title, "")
 		return
 	default:
 		log.Printf("[ERROR] ]Invalid action was submitted: %s", action.Name)
@@ -110,8 +119,23 @@ func (h *interactionHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // responseMessage response to the original slackbutton enabled message.
 // It removes button and replace it with message which indicate how bot will work
-func (h *interactionHandler) responseMessage(w http.ResponseWriter, message slack.AttachmentActionCallback, title, value string) {
-	log.Printf("message: %v", message)
-	log.Printf("OriginalMessage.Msg: %v", message.OriginalMessage.Msg)
-	log.Printf("OriginalMessage.Msg.Attachments: %v", message.OriginalMessage.Msg.Attachments)
+func (h *interactionHandler) responseMessage(w http.ResponseWriter, channel, ts, title, value string) {
+	attachment := slack.Attachment{
+		Color:      "#f9a41b",
+		CallbackID: "beer",
+		Actions:    []slack.AttachmentAction{},
+		Fields: []slack.AttachmentField{
+			{
+				Title: title,
+				Value: value,
+				Short: false,
+			},
+		},
+	}
+	params := slack.MsgOptionAttachments(attachment)
+	log.Println("channel:", channel, "ts:", ts, "params:", params)
+	_, _, _, err := h.slackClient.UpdateMessage(channel, ts, params)
+	if err != nil {
+		log.Printf("failed to post message: %s", err)
+	}
 }

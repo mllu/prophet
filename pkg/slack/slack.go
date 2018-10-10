@@ -52,7 +52,7 @@ func (s *SlackListener) ListenAndResponse() {
 
 // handleMesageEvent handles message events.
 func (s *SlackListener) handleMessageEvent(ev *slack.MessageEvent, rtm *slack.RTM) error {
-	log.Println("handleMessageEvent begin")
+	log.Println("handleMessageEvent begin", ev.Channel, ev.Text)
 	// Only response in specific channel. Ignore else.
 	if ev.Channel != s.channelID {
 		log.Printf("%s %s", ev.Channel, ev.Msg.Text)
