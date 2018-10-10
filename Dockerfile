@@ -6,10 +6,10 @@ WORKDIR /app
 ENV SRC_DIR=/go/src/github.robot.car/meng-lin-lu/prophet
 
 # Add the source code:
-ADD . $SRC_DIR
+ADD . /app/src/prophet
 
 # Build it:
-RUN cd $SRC_DIR; go build -o prophet; chmod +x prophet; cp prophet /app/
+RUN cd /app/src/prophet; go build -o prophet; chmod +x prophet; cp prophet /app/
 
 # expost port
 EXPOSE 8080

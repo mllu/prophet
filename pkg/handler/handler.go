@@ -11,7 +11,7 @@ import (
 
 	mySlack "github.com/mllu/prophet/pkg/slack"
 
-	"github.com/nlopes/slack"
+	"github.com/mllu/slack"
 )
 
 // interactionHandler handles interactive message response.

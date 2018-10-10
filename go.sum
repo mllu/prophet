@@ -1,0 +1,12 @@
+github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH/Q=
+github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
+github.com/kelseyhightower/envconfig v1.3.0 h1:IvRS4f2VcIQy6j4ORGIf9145T/AsUB+oY8LyvN8BXNM=
+github.com/kelseyhightower/envconfig v1.3.0/go.mod h1:cccZRl6mQpaq41TPp5QxidR+Sa3axMbJDNb//FQX6Gg=
+github.com/mllu/dialogflow-go-client v0.0.0-20181009201626-8dbb7c07fd10 h1:oacviYcraZbxtSpjxiZs/zzPuhqQLCg2b1hItL72N1I=
+github.com/mllu/dialogflow-go-client v0.0.0-20181009201626-8dbb7c07fd10/go.mod h1:M1GAvQRAYRg109PV0yUJ0eSSgGPT6lWW7+PW07TrzMI=
+github.com/mllu/go.uuid v1.2.1 h1:Cu8WP9ycmNK4c6+P7JpsYjK7srQS4IcmU8LzHhTGI3s=
+github.com/mllu/go.uuid v1.2.1/go.mod h1:Lm7dBEBsr1erF+cmNjocC668od7LIDrHtu/bQFOY2sw=
+github.com/mllu/slack v0.4.2 h1:En0E0/U/ZWFQQd/HtvcRrkEXINyrxQTYYOMA30WdDjo=
+github.com/mllu/slack v0.4.2/go.mod h1:sFUs6bcv2hrCOMX+xuUXRp5JqXU4AeQjptRfm5jbsQQ=
+github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
+github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

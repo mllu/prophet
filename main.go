@@ -9,7 +9,7 @@ import (
 	mySlack "github.com/mllu/prophet/pkg/slack"
 
 	"github.com/kelseyhightower/envconfig"
-	"github.com/nlopes/slack"
+	"github.com/mllu/slack"
 )
 
 func main() {
